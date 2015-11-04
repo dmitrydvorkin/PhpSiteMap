@@ -11,7 +11,9 @@ Usage:
 sm_notify.php sm_notify.conf <SitemapURL>
 ```
 Requires: php_curl, php_simplexml.
+
 Exit code: == 0 - success, != 0 - error.
+
 Output: STDOUT - programm execution information.
 
 Run example:
@@ -36,7 +38,9 @@ sm_parser.php <SiteMapConfig>
 ```
 
 Requires: php_simplexml.
+
 Exit code: == 0 - success, != 0 - error.
+
 Output: STDOUT - SiteMap contents, STDERR - programm execution information.
 
 Run example:
@@ -99,9 +103,12 @@ Is an sm_parser.php xml configuration file. General structure:
 
 Where:
 
-siteBAseUrl is the base URL for all paths. Ex.: "http://host.com"
+siteBaseUrl is the base URL for all paths. Ex.: "http://host.com"
 
 Other [site options]:
+
 priority="true" : add hits koefficient to each location found.
+
 out_dbg="./dbg_file.log" : output information for each non-200 parsed line
+
 out_flt="./flt_file.log" : output filter processing information
