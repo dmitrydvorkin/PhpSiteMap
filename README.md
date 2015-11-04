@@ -112,3 +112,14 @@ priority="true" : add hits koefficient to each location found.
 out_dbg="./dbg_file.log" : output information for each non-200 parsed line
 
 out_flt="./flt_file.log" : output filter processing information
+
+## Processing speed
+
+Highly depends on two factors:
+
+- debug enabled;
+- patterns number and complexity.
+
+In tests:
+
+- 16 patterns, full debug enabled and 18Mb of access log (78000 lines): 5 seconds
