@@ -104,6 +104,9 @@
  echo( ' xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n");
  echo( ' xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n");
  foreach ( $Pa as $k=>$v) {
+   if ( $k[ 0] != '/') {
+     fwrite( STDERR, 'Wrong index in loc: \'' . print_r( $k, true) . "'\n");
+     continue;  }
    $hits = $v;
    $koef = ( ( int)( $hits*10000/$total_hits))/10000;
    echo( '<url>' . "\n");
