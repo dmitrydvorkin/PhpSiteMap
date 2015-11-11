@@ -34,6 +34,12 @@
    foreach ( $v->attributes() as $fk=>$fv) $xa[ $fk] = trim( $fv);
    $alternate[] = $xa;
  }
+ $priority = array();
+ foreach( $xmlconf->priority as $k=>$v) {
+   $xa = array();
+   foreach ( $v->attributes() as $fk=>$fv) $xa[ $fk] = trim( $fv);
+   $priority[] = $xa;
+ }
 
  $Pa = $Aa = array();
  $total_hits = 0;
@@ -111,7 +117,10 @@
    $koef = ( ( int)( $hits*10000/$total_hits))/10000;
    echo( '<url>' . "\n");
    echo( ' <loc>' . $site[ 'base'] . $k . '</loc>' . "\n");
-   if ( $site[ 'priority'] != '') echo( ' <priority>' . $koef . '</priority>' . "\n");
+   if ( $site[ 'priority'] != '') {
+     $koef = find_priority( $priority, $k, $koef);
+     echo( ' <priority>' . $koef . '</priority>' . "\n");
+   }
    if ( count( $Aa[ $k]) > 0) foreach ( $Aa[ $k] as $lk=>$lv) {
      echo( ' <xhtml:link rel="alternate" hreflang="' . $lk . '" href="' . $site[ 'base'] . $lv . '" />' . "\n");
    }
@@ -120,6 +129,20 @@
  echo( '</urlset>' . "\n");
 
  exit( 0);
+
+function find_priority( &$_priority, $_path, $_koef) {
+ foreach ( $_priority as $k=>$v) {
+   if ( $v[ 'pattern'] == '') continue;
+   if ( $v[ 'value'] == '') continue;
+//   $p = preg_quote( $v[ 'pattern'], '/');
+   $p = str_replace( '/', '\/', $v[ 'pattern']);
+   $m = preg_match( '/' . $p . '/i', $_path);
+   if ( $m === FALSE) {
+     echo( 'Error in p:' . $p . ' of ' . $_path . "\n");
+     exit( 1);  }
+   if ( $m) return( $v[ 'value']);
+ }
+ return( $_koef);  }
 
 function is_ignore( &$_ignore, $_code, $_path) {
  foreach ( $_ignore as $k=>$v) {
@@ -167,6 +190,7 @@ function filter_out( &$_filter, $_url, $_path, &$_rsn) {
  if ( strcasecmp( $ext, 'flv' ) == 0) return( true);
  if ( strcasecmp( $ext, 'woff') == 0) return( true);
  if ( strcasecmp( $ext, 'ttf' ) == 0) return( true);
+ if ( strcasecmp( $ext, 'eot' ) == 0) return( true);
  if ( strcasecmp( $ext, 'kmz' ) == 0) return( true);
  if ( strcasecmp( $ext, 'bin' ) == 0) return( true);
  if ( strcasecmp( $ext, 'exe' ) == 0) return( true);
