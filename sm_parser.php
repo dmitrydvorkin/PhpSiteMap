@@ -55,6 +55,7 @@
      continue;  }
    fwrite( STDERR, 'Processing ' . $lv[ 'path'] . '...');
    while ( !feof( $fp) && ( $b = fgets( $fp, 16384)) !== false) {
+     if ( !array_key_exists( 'lines', $stats)) $stats[ 'lines'] = 0;
      $stats[ 'lines']++;
      $La = explode( ' ', $b);
      // exclude bad status codes
@@ -71,6 +72,7 @@
 	 break;
      }
      if ( !$process) {
+       if ( !array_key_exists( $La[ 8], $stats[ 'errors'])) $stats[ 'errors'][ $La[ 8]] = 0;
        $stats[ 'errors'][ $La[ 8]]++;
        if ( $fp_out_d) fwrite( $fp_out_d, 'code:' . ( int)$La[ 8] . ' for ' . $La[ 6] . ' b:' . $b . "\n");
        if ( $fp_out_f) fwrite( $fp_out_f, 'ERR: (code:' . $La[ 8] . '): ' . $La[ 6] . "\n");
@@ -79,11 +81,16 @@
      $up = @parse_url( $La[ 6], PHP_URL_PATH);
      if ( filter_out( $filter, $La[ 6], $up, $rsn)) {
        if ( $fp_out_f) fwrite( $fp_out_f, 'ERR: (filt:' . $rsn . '): ' . $La[ 6] . "\n");
+       if ( !array_key_exists( 'dropped', $stats)) $stats[ 'dropped'] = 0;
        $stats[ 'dropped']++;  continue;  }
+     if ( !array_key_exists( 'hits', $stats)) $stats[ 'hits'] = 0;
      $stats[ 'hits']++;
      // resolve alternates if exists
      $lng = find_alternate( $alternate, $up, $upu);
-     if ( $lng != '') $Aa[ $upu][ $lng] = $up;
+     if ( $lng != '') {
+       if ( !array_key_exists( $upu, $Aa)) $Aa[ $upu] = array();
+       $Aa[ $upu][ $lng] = $up;  }
+     if ( !array_key_exists( $upu, $Pa)) $Pa[ $upu] = 0;
      $Pa[ $upu]++;
      $total_hits++;
    }
@@ -121,7 +128,7 @@
      $koef = find_priority( $priority, $k, $koef);
      echo( ' <priority>' . $koef . '</priority>' . "\n");
    }
-   if ( count( $Aa[ $k]) > 0) foreach ( $Aa[ $k] as $lk=>$lv) {
+   if ( array_key_exists( $k, $Aa) && count( $Aa[ $k]) > 0) foreach ( $Aa[ $k] as $lk=>$lv) {
      echo( ' <xhtml:link rel="alternate" hreflang="' . $lk . '" href="' . $site[ 'base'] . $lv . '" />' . "\n");
    }
    echo( '</url>' . "\n");
